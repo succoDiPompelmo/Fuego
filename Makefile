@@ -6,3 +6,6 @@ build: ./src/main.o
 
 test: ./src/test.c
 	$(CC) -o test ./src/test.c -lcriterion
+
+doc:
+	doxygen
