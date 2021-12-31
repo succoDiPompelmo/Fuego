@@ -28,6 +28,9 @@
 *.so.*
 *.dylib
 
+# VS CODE
+/.vscode
+
 # Executables
 *.exe
 *.out
