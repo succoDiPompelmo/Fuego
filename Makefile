@@ -1,8 +1,8 @@
 CC=clang
 CFLAGS=-I.
 
-build: ./src/main.o
-	$(CC) -o ./build/Fuego ./src/main.o
+build: ./src/main.o ./src/chunk.o ./src/memory.o
+	$(CC) -o ./build/Fuego ./src/main.o ./src/chunk.o ./src/memory.o
 
 test: ./src/test.c
 	$(CC) -o test ./src/test.c -lcriterion
