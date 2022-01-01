@@ -5,6 +5,7 @@
 #define fuego_chunk_h
 
 #include "common.h"
+#include "value.h"
 
 // Enum representing the one byte operation code (aka OpCode) 
 // that controls what kind of instructions we are dealing with.
@@ -17,10 +18,12 @@ typedef struct {
     int count;
     int capacity;
     uint8_t* code;
+    ValueArray constants;
 } Chunk;
 
 void initChunk(Chunk* chunk);
 void freeChunk(Chunk* chunk);
 void writeChunk(Chunk* chunk, uint8_t byte);
+int addCostant(Chunk* chunk, Value value);
 
 #endif
