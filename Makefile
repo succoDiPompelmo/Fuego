@@ -12,3 +12,6 @@ test: ./src/test.c
 
 doc:
 	doxygen
+
+clean:
+	find ./src -name "*.o" -type f -delete
