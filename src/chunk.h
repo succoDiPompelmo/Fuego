@@ -10,6 +10,7 @@
 // Enum representing the one byte operation code (aka OpCode) 
 // that controls what kind of instructions we are dealing with.
 typedef enum {
+    OP_CONSTANT,
     OP_RETURN,
 } OpCode;
 
