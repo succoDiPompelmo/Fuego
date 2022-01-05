@@ -1,14 +1,14 @@
 CC=clang
 CFLAGS=-I.
 
-build: ./src/main.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o
-	$(CC) -o ./build/Fuego ./src/main.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o
+build: ./src/main.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o ./src/scanner.o ./src/compiler.o
+	$(CC) -o ./build/Fuego ./src/main.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o ./src/scanner.o ./src/compiler.o
 
 run:
 	./build/Fuego
 
-test: ./src/test.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o
-	$(CC) -o ./build/Test ./src/test.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o -lcriterion
+test: ./src/test.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o ./src/scanner.o ./src/compiler.o
+	$(CC) -o ./build/Test ./src/test.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o ./src/scanner.o ./src/compiler.o -lcriterion
 
 doc:
 	doxygen
