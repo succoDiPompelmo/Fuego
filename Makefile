@@ -1,17 +1,40 @@
-CC=clang
-CFLAGS=-I.
+CC		:= clang
+CFLAGS 	:= -Wall
 
-build: ./src/main.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o ./src/scanner.o ./src/compiler.o
-	$(CC) -o ./build/Fuego ./src/main.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o ./src/scanner.o ./src/compiler.o
+CPPFLAGS := -Iinclude -MMD -MP # -I is a preprocessor flag, not a compiler flag
+CFLAGS   := -Wall              # some warnings about bad code
+LDFLAGS  := -Llib              # -L is a linker flag
+LDLIBS   := -lcriterion        # Left empty if no libs are needed
 
-run:
-	./build/Fuego
+SRC_DIR := src
+OBJ_DIR := build
+BIN_DIR := bin
 
-test: ./src/test.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o ./src/scanner.o ./src/compiler.o
-	$(CC) -o ./build/Test ./src/test.o ./src/chunk.o ./src/memory.o ./src/debug.o ./src/value.o ./src/vm.o ./src/scanner.o ./src/compiler.o -lcriterion
+EXE := $(BIN_DIR)/Fuego
 
-doc:
-	doxygen
+SRC := $(wildcard $(SRC_DIR)/*.c)
+
+OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+# You can also do it like that
+OBJ := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+
+.PHONY: all clean
+
+all: $(EXE)
+
+$(EXE): $(OBJ) | $(BIN_DIR)
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+$(BIN_DIR) $(OBJ_DIR):
+	mkdir -p $@
+
+run: 
+	./$(EXE)
 
 clean:
-	find ./src -name "*.o" -type f -delete
+	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
+
+-include $(OBJ:.o=.d)
