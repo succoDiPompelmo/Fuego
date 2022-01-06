@@ -18,7 +18,7 @@ OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 # You can also do it like that
 OBJ := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
-.PHONY: all clean
+.PHONY: all clean run
 
 all: $(EXE)
 
