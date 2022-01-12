@@ -169,6 +169,7 @@ static void unary() {
 }
 
 ParseRule rules[] = {
+    //                         PREFIX       INFIX   PRECEDENCE
     [TOKEN_LEFT_PAREN]      = {grouping,    NULL,   PREC_NONE},
     [TOKEN_RIGHT_PAREN]     = {NULL,        NULL,   PREC_NONE},
     [TOKEN_LEFT_BRACE]      = {NULL,        NULL,   PREC_NONE},
