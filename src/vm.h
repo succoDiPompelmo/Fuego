@@ -19,6 +19,7 @@ typedef struct {
     uint8_t* ip; // Instruction Pointer.
     Value stack[STACK_MAX]; // Array backing the stack implementation
     Value* stackTop; // Pointer to stack last element.
+    Obj* objects;
 } VM;
 
 typedef enum {
@@ -26,6 +27,8 @@ typedef enum {
     INTERPRET_COMPILE_ERROR,
     INTERPRET_RUNTIME_ERROR
 } InterpretResult;
+
+extern VM vm;
 
 void initVM();
 void freeVM();
