@@ -24,14 +24,14 @@ OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 OBJ := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 OBJ_NO_MAIN := $(filter-out build/main.o, $(OBJ))
 
-$(info $$OBJ_NO_MAIN is [${OBJ_NO_MAIN}])
+# $(info $$OBJ_NO_MAIN is [${OBJ_NO_MAIN}])
 
 .PHONY: all clean run unity test run_test
 
 all: $(EXE)
 
 $(EXE): $(OBJ) | $(BIN_DIR)
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+	$(CC) $(CPPFLAGS) $^ -o $(EXE)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@

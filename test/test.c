@@ -1,5 +1,5 @@
 #include "unity.h"
-#include "chunk.h"
+#include "table.h"
 
 void setUp(void)
 {
@@ -9,18 +9,18 @@ void tearDown(void)
 {
 }
 
-void test_FindFunction_WhichIsBroken_ShouldReturnZeroIfItemIsNotInList_WhichWorksEvenInOurBrokenCode(void)
+void test_Table(void)
 {
-  /* All of these should pass */
-  TEST_ASSERT_EQUAL(0, 0);
+  Table table;
+  initTable(&table);
 
-  Chunk chunk;
-  initChunk(&chunk);
-
+  TEST_ASSERT_EQUAL(table.capacity, 0);
+  TEST_ASSERT_EQUAL(table.count, 0);
+  TEST_ASSERT_EQUAL(table.entries, NULL);
 }
 
 int main(void) {
     UNITY_BEGIN();
-    RUN_TEST(test_FindFunction_WhichIsBroken_ShouldReturnZeroIfItemIsNotInList_WhichWorksEvenInOurBrokenCode);
+    RUN_TEST(test_Table);
     return UNITY_END();
 }
