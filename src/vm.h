@@ -20,6 +20,7 @@ typedef struct {
     uint8_t* ip; // Instruction Pointer.
     Value stack[STACK_MAX]; // Array backing the stack implementation
     Value* stackTop; // Pointer to stack last element.
+    Table globals; // global variables
     Table strings; // String interning
     Obj* objects;
 } VM;

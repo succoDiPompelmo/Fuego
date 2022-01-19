@@ -31,9 +31,11 @@ void initVM() {
     resetStack();
     vm.objects = NULL;
     initTable(&vm.strings);
+    initTable(&vm.globals);
 }
 
 void freeVM() {
+    freeTable(&vm.globals);
     freeTable(&vm.strings);
     freeObjects();
 }
@@ -74,6 +76,7 @@ static InterpretResult run() {
     // Constant bytecode instruction has 1 byte for instruction name and the next one store the index to the values.
     #define READ_BYTE() (*vm.ip++)
     #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+    #define READ_STRING() AS_STRING(READ_CONSTANT())
     /*
         I know... this is not magic but the C preprocessor to full throttle. I will share with you the tricks:
         - Yes, you can pass operator to C macro, baam. C doesn't care that operators are not first-class citizens in C.
@@ -98,72 +101,83 @@ static InterpretResult run() {
 
     for (;;) {
         #ifdef DEBUG_TRACE_EXECUTION
-            printf("        ");
-            for (Value* slot = vm.stack; slot < vm.stackTop; slot++) {
-                printf("[ ");
-                printValue(*slot);
-                printf(" ]");
-            }
-            printf("\n");
-            disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
+        printf("        ");
+        for (Value* slot = vm.stack; slot < vm.stackTop; slot++) {
+            printf("[ ");
+            printValue(*slot);
+            printf(" ]");
+        }
+        printf("\n");
+        disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
         #endif
         uint8_t instruction;
         switch (instruction = READ_BYTE()) {
-        case OP_CONSTANT: {
-            Value constant = READ_CONSTANT();
-            push(constant);
-            printValue(constant);
-            printf("\n");
-            break;
-        }
-        case OP_NIL: push(NIL_VAL); break;
-        case OP_TRUE: push(BOOL_VAL(true)); break;
-        case OP_FALSE: push(BOOL_VAL(false)); break;
-        case OP_EQUAL: {
-            Value b = pop();
-            Value a = pop();
-            push(BOOL_VAL(valuesEqual(a,b)));
-            break;
-        }
-        case OP_GREATER: BINARY_OP(BOOL_VAL, >); break;
-        case OP_LESS: BINARY_OP(BOOL_VAL, <); break;
-        case OP_ADD: {
-            if (IS_STRING(peek(0)) && IS_STRING(peek(1))) {
-                concatenate();
-            } else if (IS_NUMBER(peek(0)) && IS_NUMBER(peek(1))) {
-                double b = AS_NUMBER(pop());
-                double a = AS_NUMBER(pop());
-                push(NUMBER_VAL(a + b));
-            } else {
-                runtimeError(
-                    "Operands must be two numbers or two strings.");
-                return INTERPRET_RUNTIME_ERROR;
+            case OP_CONSTANT: {
+                Value constant = READ_CONSTANT();
+                push(constant);
+                // printValue(constant);
+                // printf("\n");
+                break;
             }
-            break;
-        }
-        case OP_SUBTRACT: BINARY_OP(NUMBER_VAL, -); break;
-        case OP_MULTIPLY: BINARY_OP(NUMBER_VAL, *); break;
-        case OP_DIVIDE: BINARY_OP(NUMBER_VAL, /); break;
-        case OP_NOT:
-            push(BOOL_VAL(isFalsey(pop())));
-            break;
-        case OP_NEGATE:
-            if (!IS_NUMBER(peek(0))) {
-                runtimeError("Operand must be a number.");
-                return INTERPRET_RUNTIME_ERROR;
+            case OP_NIL: push(NIL_VAL); break;
+            case OP_TRUE: push(BOOL_VAL(true)); break;
+            case OP_FALSE: push(BOOL_VAL(false)); break;
+            case OP_POP: pop(); break;
+            case OP_DEFINE_GLOBAL: {
+                ObjString* name = READ_STRING();
+                tableSet(&vm.globals, name, peek(0));
+                pop();
+                break;
             }
-            push(NUMBER_VAL(-AS_NUMBER(pop()))); 
-            break;   
-        case OP_RETURN: {
-            printValue(pop());
-            printf("\n");
-            return INTERPRET_OK;
+            case OP_EQUAL: {
+                Value b = pop();
+                Value a = pop();
+                push(BOOL_VAL(valuesEqual(a,b)));
+                break;
+            }
+            case OP_GREATER: BINARY_OP(BOOL_VAL, >); break;
+            case OP_LESS: BINARY_OP(BOOL_VAL, <); break;
+            case OP_ADD: {
+                if (IS_STRING(peek(0)) && IS_STRING(peek(1))) {
+                    concatenate();
+                } else if (IS_NUMBER(peek(0)) && IS_NUMBER(peek(1))) {
+                    double b = AS_NUMBER(pop());
+                    double a = AS_NUMBER(pop());
+                    push(NUMBER_VAL(a + b));
+                } else {
+                    runtimeError(
+                        "Operands must be two numbers or two strings.");
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                break;
+            }
+            case OP_SUBTRACT: BINARY_OP(NUMBER_VAL, -); break;
+            case OP_MULTIPLY: BINARY_OP(NUMBER_VAL, *); break;
+            case OP_DIVIDE: BINARY_OP(NUMBER_VAL, /); break;
+            case OP_NOT:
+                push(BOOL_VAL(isFalsey(pop())));
+                break;
+            case OP_NEGATE:
+                if (!IS_NUMBER(peek(0))) {
+                    runtimeError("Operand must be a number.");
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                push(NUMBER_VAL(-AS_NUMBER(pop()))); 
+                break;
+            case OP_PRINT: {
+                printValue(pop());
+                printf("\n");
+                break;
+            } 
+            case OP_RETURN: {
+                return INTERPRET_OK;
             }
         }
     }
 
     #undef READ_BYTE
     #undef READ_CONSTANT
+    #undef READ_STRING
     #undef BINARY_OP
 }
 
