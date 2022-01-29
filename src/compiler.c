@@ -698,7 +698,7 @@ static void declaration() {
 static void statement() {
     if (match(TOKEN_PRINT)) {
         printStatement();
-    } else if (TOKEN_FOR) {
+    } else if (match(TOKEN_FOR)) {
         forStatement();
     } else if (match(TOKEN_IF)) {
         ifStatement();
