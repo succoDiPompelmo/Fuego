@@ -43,6 +43,12 @@ static ObjString* allocateString(char* chars, int length, uint32_t hash) {
     return string;
 }
 
+ObjClosure* newClosure(ObjFunction* function) {
+    ObjClosure* closure = ALLOCATE_OBJ(ObjClosure, OBJ_CLOSURE);
+    closure->function = function;
+    return closure;
+}
+
 static uint32_t hashString(const char* key, int length) {
     uint32_t hash = 2166136261u;
     for (int i = 0; i < length; i++) {
@@ -86,6 +92,9 @@ void printObject(Value value) {
     switch (OBJ_TYPE(value)) {
         case OBJ_STRING:
             printf("%s", AS_CSTRING(value));
+            break;
+        case OBJ_CLOSURE:
+            printFunction(AS_CLOSURE(value)->function);
             break;
         case OBJ_FUNCTION:
             printFunction(AS_FUNCTION(value));
