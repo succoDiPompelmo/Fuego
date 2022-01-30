@@ -30,6 +30,7 @@ typedef struct {
     Value* stackTop; // Pointer to stack last element.
     Table globals; // global variables
     Table strings; // String interning
+    ObjUpValue* openUpvalues;
     Obj* objects;
 } VM;
 
