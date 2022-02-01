@@ -31,7 +31,13 @@ typedef struct {
     Table globals; // global variables
     Table strings; // String interning
     ObjUpValue* openUpvalues;
+
+    size_t bytesAllocated;
+    size_t nextGC;
     Obj* objects;
+    int grayCount;
+    int grayCapacity;
+    Obj** grayStack;
 } VM;
 
 typedef enum {
