@@ -22,6 +22,8 @@ typedef enum {
     OP_SET_GLOBAL,
     OP_GET_UPVALUE,
     OP_SET_UPVALUE,
+    OP_GET_PROPERTY,
+    OP_SET_PROPERTY,
     OP_EQUAL,
     OP_GREATER,
     OP_LESS,
@@ -39,6 +41,7 @@ typedef enum {
     OP_CLOSURE,
     OP_CLOSE_UPVALUE,
     OP_RETURN,
+    OP_CLASS,
 } OpCode;
 
 // Struct to store data related to bytecode instructions. It represents a Dynamic Array of bytes.
