@@ -2,8 +2,11 @@
 #include "table.h"
 #include "value.h"
 #include "object.h"
+#include "vm.h"
 
-void setUp(void) {}
+void setUp(void) {
+  initVM();
+}
 void tearDown(void) {}
 
 void test_Table(void)
@@ -17,6 +20,7 @@ void test_Table(void)
 
   Value boolVal = BOOL_VAL(true);
   Value numberVal = NUMBER_VAL(1);
+  Value result;
 
   ObjString* key = takeString("key", 3);
 
