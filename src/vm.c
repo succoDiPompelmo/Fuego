@@ -128,6 +128,7 @@ static bool callValue(Value callee, int argCount) {
                     runtimeError("Expected 0 arguments but got %d", argCount);
                     return false;
                 }
+                return true;
             }
             case OBJ_CLOSURE:
                 return call(AS_CLOSURE(callee), argCount);
