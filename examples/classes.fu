@@ -1,0 +1,12 @@
+class CoffeMaker {
+    init() {
+        print("I'm making a coffe maker");
+    }
+
+    brew(flavor) {
+        print("I'm brewing coffe of " + flavor + " flavor");
+    }
+}
+
+var maker = CoffeMaker();
+maker.brew("Arabic");

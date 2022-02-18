@@ -1,0 +1,8 @@
+var a = 1;
+
+a = a + 10 * 4;
+print(a);
+
+var b = 5;
+b = a + 7 * 8 + b * 10;
+print(b);

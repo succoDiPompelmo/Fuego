@@ -1,0 +1,10 @@
+var closureVar = "";
+
+fun funFunction() {
+    closureVar = "funny";
+    print(closureVar + " Function");
+}
+
+funFunction();
+
+print(closureVar);
