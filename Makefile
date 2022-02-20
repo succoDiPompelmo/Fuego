@@ -28,6 +28,13 @@ OBJ_NO_MAIN := $(filter-out build/main.o, $(OBJ))
 
 .PHONY: all clean run unity test run_test
 
+clean:
+	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
+
+#####################
+#	EXECUTABLE		#
+#####################
+
 all: $(EXE)
 
 $(EXE): $(OBJ) | $(BIN_DIR)
@@ -42,8 +49,9 @@ $(BIN_DIR) $(OBJ_DIR):
 run:
 	./$(EXE)
 
-clean:
-	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
+#####################
+#	UNITY LIBRARY	#
+#####################
 
 unity: ./lib/unity/libunity.a
 
@@ -52,6 +60,10 @@ unity: ./lib/unity/libunity.a
 
 ./lib/unity/unity.o: ./lib/unity/unity.c
 	$(CC) -c ./lib/unity/unity.c -o ./lib/unity/unity.o
+
+#####################
+#	TEST			#
+#####################
 
 test: $(TEST_EXE)
 	./$(TEST_EXE)
