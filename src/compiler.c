@@ -41,36 +41,6 @@ typedef struct {
     Precedence precedence;
 } ParseRule;
 
-typedef struct {
-    Token name;
-    bool isCaptured;
-    int depth;
-} Local;
-
-typedef struct {
-    uint8_t index;
-    bool isLocal;
-} Upvalue;
-
-typedef enum {
-    TYPE_FUNCTION,
-    TYPE_INITIALIZER,
-    TYPE_METHOD,
-    TYPE_SCRIPT,
-} FunctionType;
-
-typedef struct Compiler {
-    // What am i doing ?
-    struct Compiler* enclosing;
-    ObjFunction* function;
-    FunctionType type;
-
-    Local locals[UINT8_COUNT];
-    int localCount;
-    Upvalue upvalues[UINT8_COUNT];
-    int scopeDepth;
-} Compiler;
-
 typedef struct ClassCompiler {
     struct ClassCompiler* enclosing;
     bool hasSuperclass;
@@ -175,7 +145,7 @@ static void emitReturn() {
     emitByte(OP_RETURN);
 }
 
-static uint8_t makeCostant(Value value) {
+uint8_t makeCostant(Value value) {
     int costant = addCostant(currentChunk(), value);
     if (costant > UINT8_MAX) {
         error("Too many costants in one chunk");
@@ -201,7 +171,7 @@ static void patchJump(int offset) {
     currentChunk()->code[offset+1] = jump & 0xff;
 }
 
-static void initCompiler(Compiler* compiler, FunctionType type) {
+void initCompiler(Compiler* compiler, FunctionType type) {
     compiler->enclosing = current;
     compiler->function = NULL;
     compiler->type = type;
